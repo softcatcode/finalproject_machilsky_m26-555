@@ -1,19 +1,12 @@
 """Сценарии использования приложения ValutaTrade Hub."""
 
 import json
-import math
-import secrets
-from datetime import datetime, timezone
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from valutatrade_hub.core.currencies import get_currency
-from valutatrade_hub.core.exceptions import (
-    ApiRequestError,
-    CurrencyNotFoundError,
-)
+from valutatrade_hub.core.exceptions import ApiRequestError
 from valutatrade_hub.core.models import Portfolio, User, Wallet
-from valutatrade_hub.decorators import log_action
 from valutatrade_hub.infra.settings import SettingsLoader
 
 settings = SettingsLoader()
@@ -34,8 +27,10 @@ def _read_json(path: Path, default: Any) -> Any:
             return json.load(file)
     except (OSError, json.JSONDecodeError) as error:
         if path == rates_file:
-            raise ApiRequestError(f"не удалось прочитать файл курсов: {error}") from error
-        raise ValueError(f"Не удалось прочитать файл {path.name}: {error}") from error
+            msg = f"не удалось прочитать файл курсов: {error}"
+            raise ApiRequestError(msg) from error
+        msg = f"Не удалось прочитать файл {path.name}: {error}"
+        raise ValueError(msg) from error
 
 
 def _write_json(path: Path, data: Any) -> None:

@@ -1,10 +1,10 @@
 """Декораторы для логирования доменных операций."""
 
-import logging
-from datetime import datetime, timezone
+from collections.abc import Callable
+from datetime import UTC, datetime
 from functools import wraps
 from inspect import signature
-from typing import Any, Callable, TypeVar, cast
+from typing import Any, TypeVar, cast
 
 from valutatrade_hub.logging_config import setup_logging
 
@@ -40,7 +40,7 @@ def _format_value(value: Any) -> str:
     return repr(value)
 
 
-def log_action(
+def log_action[F: Callable[..., Any]](
     func: F | None = None,
     *,
     verbose: bool = False,
@@ -84,7 +84,7 @@ def log_action(
             base = _get_field(arguments, "base", "base_currency")
 
             fields = [
-                datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                datetime.now(UTC).isoformat(timespec="seconds"),
                 action,
                 user,
                 f"currency={_format_value(currency)}",

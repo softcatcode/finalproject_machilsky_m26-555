@@ -3,6 +3,8 @@ import math
 import secrets
 from datetime import datetime
 
+from valutatrade_hub.core.exceptions import InsufficientFundsError
+
 
 class User:
     """Пользователь системы."""
