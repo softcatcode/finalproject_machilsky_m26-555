@@ -32,3 +32,4 @@ rates_file = "data/rates.json"
 rates_ttl_seconds = 300
 log_format = "%(asctime)s %(levelname)s %(message)s"
 base_currency = "USD"
+log_dir = "logs"
