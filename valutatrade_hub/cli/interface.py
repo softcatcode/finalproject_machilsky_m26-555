@@ -5,6 +5,11 @@ import shlex
 import sys
 
 from valutatrade_hub.core import usecases
+from valutatrade_hub.core.exceptions import (
+    ApiRequestError,
+    CurrencyNotFoundError,
+    InsufficientFundsError,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -154,6 +159,15 @@ def execute_command(
     """Выполнить команду, обработать ошибки и вернуть статус."""
     try:
         commands[args.command](args, session)
+    except InsufficientFundsError as error:
+        print(error)
+        return False
+    except CurrencyNotFoundError as error:
+        print(f"{error}. Используйте get-rate --from USD --to EUR.")
+        return False
+    except ApiRequestError as error:
+        print(f"{error}. Повторите попытку позже и проверьте соединение.")
+        return False
     except (ValueError, TypeError, OSError) as error:
         print(f"Ошибка: {error}")
         return False

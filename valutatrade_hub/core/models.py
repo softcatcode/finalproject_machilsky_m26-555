@@ -166,7 +166,11 @@ class Wallet:
         amount = self._validate_amount(amount)
 
         if amount > self.balance:
-            raise ValueError("Недостаточно средств на балансе.")
+            raise InsufficientFundsError(
+                available=self.balance,
+                required=amount,
+                code=self.currency_code,
+            )
 
         self.balance = self.balance - amount
 
