@@ -1,6 +1,7 @@
 """Командный интерфейс ValutaTrade Hub."""
 
 import argparse
+import math
 import shlex
 import sys
 
@@ -105,8 +106,8 @@ def show_portfolio(args: argparse.Namespace, session: dict) -> None:
 def buy(args: argparse.Namespace, session: dict) -> None:
     """Купить указанное количество валюты."""
     user_id = _get_user_id(session)
-    if args.amount <= 0:
-        raise ValueError("'amount' должен быть положительным числом")
+    if not math.isfinite(args.amount) or args.amount <= 0:
+        raise ValueError("Сумма покупки должна быть конечным числом больше нуля.")
 
     result = usecases.buy_currency(
         user_id,
@@ -120,8 +121,8 @@ def buy(args: argparse.Namespace, session: dict) -> None:
 def sell(args: argparse.Namespace, session: dict) -> None:
     """Продать указанное количество валюты."""
     user_id = _get_user_id(session)
-    if args.amount <= 0:
-        raise ValueError("'amount' должен быть положительным числом")
+    if not math.isfinite(args.amount) or args.amount <= 0:
+        raise ValueError("Сумма продажи должна быть конечным числом больше нуля.")
 
     result = usecases.sell_currency(
         user_id,
@@ -156,20 +157,41 @@ def execute_command(
     args: argparse.Namespace,
     session: dict,
 ) -> bool:
-    """Выполнить команду, обработать ошибки и вернуть статус."""
+    """Выполнить команду, показать понятную ошибку и вернуть статус."""
+    command = getattr(args, "command", None)
+
     try:
-        commands[args.command](args, session)
+        commands[command](args, session)
     except InsufficientFundsError as error:
-        print(error)
+        if command == "sell":
+            print(f"Не удалось продать валюту: недостаточно средств. {error}")
+        else:
+            print(f"Недостаточно средств: {error}")
         return False
     except CurrencyNotFoundError as error:
-        print(f"{error}. Используйте get-rate --from USD --to EUR.")
+        if command == "get-rate":
+            print(f"Не удалось получить курс: {error}")
+        else:
+            print(f"Не удалось выполнить команду '{command}': {error}")
         return False
     except ApiRequestError as error:
-        print(f"{error}. Повторите попытку позже и проверьте соединение.")
+        if command == "get-rate":
+            print(
+                "Не удалось получить актуальный курс. "
+                f"Проверьте соединение и повторите попытку позже. Подробности: {error}"
+            )
+        else:
+            print(f"Не удалось выполнить команду '{command}': {error}")
         return False
     except (ValueError, TypeError, OSError) as error:
-        print(f"Ошибка: {error}")
+        if command == "buy":
+            print(f"Не удалось купить валюту: {error}")
+        elif command == "sell":
+            print(f"Не удалось продать валюту: {error}")
+        elif command == "get-rate":
+            print(f"Не удалось получить курс: {error}")
+        else:
+            print(f"Ошибка: {error}")
         return False
 
     return True
