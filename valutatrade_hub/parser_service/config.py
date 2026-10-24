@@ -1,0 +1,23 @@
+"""Настройки для парсинга данных."""
+
+
+import os
+from dataclasses import dataclass
+
+
+@dataclass
+class ParserConfig:
+    EXCHANGERATE_API_KEY: str = os.getenv("EXCHANGERATE_API_KEY")
+
+    FIAT_CURRENCIES: tuple = ("RUB", "EUR", "USD")
+    CRYPTO_CURRENCIES: tuple = ("BTC", "ETH", "SOL")
+    CRYPTO_ID_MAP: dict = {
+        "BTC": "bitcoin",
+        "ETH": "etherium",
+        "SOL": "solana"
+    }
+    BASE_FIAT_CURRENCY: str = "USD"
+    
+    RATES_FILE_PATH: str = "data/rates.json"
+    HISTORY_FILE_PATH: str = "data/exchange_rates.json"
+    REQUEST_TIMEOUT: int = 10
