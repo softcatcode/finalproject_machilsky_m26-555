@@ -8,8 +8,6 @@ from typing import Any
 import requests
 from requests.exceptions import RequestException
 
-from .config import ParserConfig
-
 logger = logging.getLogger(__name__)
 
 
@@ -33,7 +31,7 @@ class BaseApiClient(ABC):
         try:
             response = requests.get(
                 url,
-                timeout=ParserConfig.REQUEST_TIMEOUT,
+                timeout=self.config.REQUEST_TIMEOUT,
             )
 
             if not response.ok:
@@ -67,15 +65,16 @@ class BaseApiClient(ABC):
 class CoinGeckoClient(BaseApiClient):
     """Клиент для получения курсов криптовалют через CoinGecko."""
 
-    def __init__(self) -> None:
+    def __init__(self, config) -> None:
         super().__init__(
             "https://api.coingecko.com/api/v3/simple/price"
         )
+        self.config = config
 
     def fetch_rates(self) -> dict[str, float]:
-        crypto_id_map = ParserConfig.CRYPTO_ID_MAP
+        crypto_id_map = self.config.CRYPTO_ID_MAP
         crypto_ids = ",".join(crypto_id_map.values())
-        fiat_currencies = ParserConfig.FIAT_CURRENCIES
+        fiat_currencies = self.config.FIAT_CURRENCIES
 
         params = {
             "ids": crypto_ids,
@@ -86,7 +85,7 @@ class CoinGeckoClient(BaseApiClient):
             response = requests.get(
                 self.base_url,
                 params=params,
-                timeout=ParserConfig.REQUEST_TIMEOUT,
+                timeout=self.config.REQUEST_TIMEOUT,
             )
 
             if not response.ok:
@@ -155,14 +154,15 @@ class CoinGeckoClient(BaseApiClient):
 class ExchangeRateApiClient(BaseApiClient):
     """Клиент для получения курсов фиатных валют."""
 
-    def __init__(self) -> None:
+    def __init__(self, config) -> None:
         super().__init__(
             "https://v6.exchangerate-api.com/v6/{api_key}/latest/{base}"
         )
+        self.config = config
 
     def fetch_rates(self) -> dict[str, float]:
-        api_key = ParserConfig.EXCHANGERATE_API_KEY
-        base_currency = ParserConfig.BASE_FIAT_CURRENCY.upper()
+        api_key = self.config.EXCHANGERATE_API_KEY
+        base_currency = self.config.BASE_FIAT_CURRENCY.upper()
 
         if not api_key:
             raise ApiRequestError(
@@ -198,7 +198,7 @@ class ExchangeRateApiClient(BaseApiClient):
 
         rates: dict[str, float] = {}
 
-        for currency in ParserConfig.FIAT_CURRENCIES:
+        for currency in self.config.FIAT_CURRENCIES:
             currency = currency.upper()
 
             if currency == base_currency:

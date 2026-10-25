@@ -18,7 +18,7 @@ class ParserConfig:
     CRYPTO_ID_MAP: dict = field(
         default_factory=lambda: {
             "BTC": "bitcoin",
-            "ETH": "etherium",
+            "ETH": "ethereum",
             "SOL": "solana"
         }
     )

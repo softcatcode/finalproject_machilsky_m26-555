@@ -4,7 +4,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-from valutatrade_hub.core.settings import SettingsLoader
+from valutatrade_hub.infra.settings import SettingsLoader
 
 
 def setup_logging(debug: bool = False) -> logging.Logger:
