@@ -327,7 +327,7 @@ def buy_currency(user_id: int, currency: str, amount: float) -> str:
     _save_portfolio(portfolio)
     return (
         f"Куплено {amount:.8g} {currency} по курсу {rate:.8g} {base_currency};"
-        " списано {cost:.8g} {base_currency}."
+        f" списано {cost:.8g} {base_currency}."
     )
 
 
@@ -354,7 +354,7 @@ def sell_currency(user_id: int, currency: str, amount: float) -> str:
     _save_portfolio(portfolio)
     return (
         f"Продано {amount:.8g} {currency} по курсу {rate:.8g}"
-        " {base_currency}; зачислено {proceeds:.8g} {base_currency}."
+        f" {base_currency}; зачислено {proceeds:.8g} {base_currency}."
     )
 
 
