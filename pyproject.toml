@@ -9,6 +9,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "pytest>=9.1.1",
     "ruff>=0.17.1",
 ]
 
@@ -24,7 +25,7 @@ quote-style = "double"
 indent-style = "space"
 
 [project.scripts]
-wallet = "finalproject_machilsky_m26_555.main:main"
+wallet = "valutatrade_hub.cli.interface:main"
 
 
 [tool.valutatrade]
@@ -36,3 +37,10 @@ rates_ttl_seconds = 300
 log_format = "%(asctime)s %(levelname)s %(message)s"
 base_currency = "USD"
 log_dir = "logs"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["valutatrade_hub"]
