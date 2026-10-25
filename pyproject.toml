@@ -2,7 +2,10 @@
 name = "finalproject-machilsky-m26-555"
 version = "0.1.0"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "python-dotenv>=1.2.4",
+    "requests>=2.34.2",
+]
 
 [dependency-groups]
 dev = [

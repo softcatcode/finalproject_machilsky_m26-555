@@ -2,7 +2,11 @@
 
 
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 @dataclass
@@ -11,11 +15,13 @@ class ParserConfig:
 
     FIAT_CURRENCIES: tuple = ("RUB", "EUR", "USD")
     CRYPTO_CURRENCIES: tuple = ("BTC", "ETH", "SOL")
-    CRYPTO_ID_MAP: dict = {
-        "BTC": "bitcoin",
-        "ETH": "etherium",
-        "SOL": "solana"
-    }
+    CRYPTO_ID_MAP: dict = field(
+        default_factory=lambda: {
+            "BTC": "bitcoin",
+            "ETH": "etherium",
+            "SOL": "solana"
+        }
+    )
     BASE_FIAT_CURRENCY: str = "USD"
     
     RATES_FILE_PATH: str = "data/rates.json"
