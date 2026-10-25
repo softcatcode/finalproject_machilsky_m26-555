@@ -1,0 +1,46 @@
+[project]
+name = "finalproject-machilsky-m26-555"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = [
+    "python-dotenv>=1.2.4",
+    "requests>=2.34.2",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "ruff>=0.17.1",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[project.scripts]
+wallet = "valutatrade_hub.cli.interface:main"
+
+
+[tool.valutatrade]
+data_dir = "data"
+users_file = "data/users.json"
+portfolios_file = "data/portfolios.json"
+rates_file = "data/rates.json"
+rates_ttl_seconds = 300
+log_format = "%(asctime)s %(levelname)s %(message)s"
+base_currency = "USD"
+log_dir = "logs"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["valutatrade_hub"]
