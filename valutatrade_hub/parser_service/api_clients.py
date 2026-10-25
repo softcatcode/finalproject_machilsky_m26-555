@@ -10,7 +10,6 @@ from requests.exceptions import RequestException
 
 from .config import ParserConfig
 
-
 logger = logging.getLogger(__name__)
 
 
